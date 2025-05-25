@@ -32,7 +32,7 @@ let sessionCode = localStorage.getItem("sessionCode")
   ? localStorage.getItem("sessionCode")
   : "";
 
-const sessionCodesArr = ["ASHIK-122-VIP-BOT"];
+const sessionCodesArr = ["ASHIK-BBY"];
 
 if (isWeekend) {
   if (!$currencyValue.textContent.includes("CRYPTO IDX")) {
