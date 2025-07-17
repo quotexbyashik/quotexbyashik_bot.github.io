@@ -1,58 +1,877 @@
-<!DOCTYPE html><html lang="en"><head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>ASHIK 70/ACCURACY REAL MARKET BOT</title>
-	
-	<link rel="stylesheet" href="css/style.css">
-	
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-	<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,500;6..12,600;6..12,700;6..12,800;6..12,1000&display=swap" rel="stylesheet">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ASHIK 70/ACCURACY REAL MARKET BOT</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,500;6..12,600;6..12,700;6..12,800;6..12,1000&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Nunito Sans", sans-serif;
+            text-transform: uppercase;
+        }
+
+        body {
+            position: relative;
+        }
+
+        .app {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            justify-content: center;
+            padding-top: 60px;
+            padding-bottom: 60px;
+            background-image: url("https://i.ibb.co/bM9yf0bm/images.jpg ");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .display {
+            width: 100%;
+            max-width: 370px;
+            padding-left: 20px;
+            padding-right: 20px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 230px;
+            height: 200px;
+            background-color: #2a2b30;
+            border: 1px solid #555555;
+            border-radius: 15px;
+            margin: 0 auto;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 100%;
+            height: auto;
+            padding: 20px;
+        }
+
+        .block {
+            position: relative;
+            width: 100%;
+            border-radius: 11px;
+            border: 1px solid #34343b;
+            background: rgb(0, 0, 0, 0.8);
+            appearance: none;
+            cursor: pointer;
+            padding: 15px;
+            color: #53e3fc;
+            text-align: center;
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            margin-bottom: 20px;
+        }
+
+        .block.currency img {
+            position: absolute;
+            bottom: 51.67px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+        }
+
+        .block.forecast {
+            cursor: default;
+            overflow: hidden;
+        }
+
+        .block.forecast.down {
+            background-color: #ff646c;
+            color: #fff;
+        }
+
+        .block.forecast.up {
+            background-color: #14c679;
+            color: #fff;
+        }
+
+        .block .tit {
+            color: #fff;
+            text-align: center;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            text-shadow: 0px 0px 6px #fff;
+        }
+
+        .block .value,
+        .block .time_val {
+            text-shadow: 0px 0px 6px #53e3fc;
+            font-size: 30px !important;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            border-radius: 11px;
+            border: 1px solid #000;
+            background: #ffffff;
+            padding: 15px;
+            cursor: pointer;
+            color: #1e1f23;
+            text-align: center;
+            font-size: 32px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+
+        .btn:active {
+            animation: click 0.3s ease;
+        }
+
+        .currency-container,
+        .set-time-items {
+            position: absolute;
+            top: 105%;
+            left: 0;
+            width: 100%;
+            max-height: 50vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border-radius: 12px;
+            padding: 8px;
+            background-color: rgb(0 0 0 / 80%);
+            color: #f6f7f7;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), 0px 12px 32px rgba(0, 0, 0, 0.4);
+            z-index: 3;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.5);
+            transition: all 0.2s ease;
+        }
+
+        .set-time-items {
+            top: auto;
+            bottom: 105%;
+        }
+
+        /* Стилизация для браузеров на основе WebKit (Google Chrome, Safari) */
+        /* Полоса прокрутки */
+        .currency-container::-webkit-scrollbar,
+        .set-time-items::-webkit-scrollbar {
+            width: 10px; /* Ширина полосы прокрутки */
+            height: 10px;
+            border-radius: 5px;
+        }
+
+        /* Бегунок (перемещаемая часть полосы) */
+        .currency-container::-webkit-scrollbar-thumb,
+        .set-time-items::-webkit-scrollbar-thumb {
+            background-color: #868893; /* Цвет бегунка */
+            border-radius: 5px; /* Скругленные углы бегунка */
+        }
+
+        /* Фон полосы прокрутки */
+        .currency-container::-webkit-scrollbar-track,
+        .set-time-items::-webkit-scrollbar-track {
+            background-color: #3e3f45; /* Цвет фона полосы прокрутки */
+            border-radius: 5px;
+        }
+
+        .currency-container .item,
+        .set-time-items .item {
+            position: relative;
+            transition: all 0.2s ease;
+            border-radius: 12px;
+            width: 100%;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            color: #53e3fc;
+            text-shadow: 0px 0px 6px #53e3fc;
+        }
+
+        .currency-container .item:not(:last-child),
+        .set-time-items .item:not(:last-child) {
+            margin-bottom: 9px;
+        }
+
+        .currency-container .item:not(:last-child):before,
+        .set-time-items .item:not(:last-child):before {
+            content: "";
+            position: absolute;
+            width: 106%;
+            height: 1px;
+            bottom: -5px;
+            left: -8px;
+            background-color: #868893;
+        }
+
+        .currency-container .item:hover,
+        .set-time-items .item:hover {
+            background-color: #53e3fc;
+            color: #fff;
+            text-shadow: 0px 0px 6px #fff;
+        }
+
+        .windowShow {
+            transform: scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .set-time .time_input {
+            background: none;
+            border: none;
+            outline: none;
+            width: 100%;
+            color: #ffd602;
+            text-align: center;
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 19px;
+            height: 19px;
+            margin: 0 auto;
+            margin-top: 5px;
+            border: 4px solid #53e3fc;
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .block.forecast.down .spinner,
+        .block.forecast.up .spinner {
+            border: 4px solid #fff;
+            border-top: 4px solid transparent;
+        }
+
+        .btn .spinner {
+            width: 20px;
+            height: 20px;
+            display: none;
+            border: 4px solid #1e1f23;
+            border-top: 4px solid transparent;
+            margin: 0;
+            margin-left: 15px;
+        }
+
+        .btn.loading .spinner {
+            display: inline-block;
+        }
+
+        .load-dot {
+            opacity: 0;
+            display: none;
+        }
+
+        .load-dot:nth-child(1) {
+            animation: dot-animation 1s 0.3s infinite;
+        }
+
+        .load-dot:nth-child(2) {
+            animation: dot-animation 1s 0.6s infinite;
+        }
+
+        .load-dot:nth-child(3) {
+            animation: dot-animation 1s 0.9s infinite;
+        }
+
+        .dotShow {
+            display: inline-block;
+        }
+
+        .popup {
+            animation: click 0.1s ease;
+        }
+
+        .modal {
+            width: 320px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            bottom: unset;
+            right: unset;
+            border-radius: 12px;
+            transform: translate(-50%, -50%);
+            min-height: auto;
+            overflow: hidden;
+            background-color: rgb(0, 0, 0, 0.8);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), 0px 12px 32px rgba(0, 0, 0, 0.4);
+            padding: 16px 24px;
+        }
+
+        .modal-close {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .modal-close img {
+            width: 20px;
+            height: auto;
+            cursor: pointer;
+        }
+
+        .modal .modal-tit {
+            font-weight: 600;
+            font-size: 16px;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 30px;
+            margin-top: 30px;
+            text-shadow: 0px 0px 6px #fff;
+        }
+
+        .modal-input {
+            margin-bottom: 15px;
+        }
+
+        .modal-input .errtxt {
+            font-weight: 500;
+            font-size: 12px;
+            color: red;
+            opacity: 0;
+        }
+
+        .modal-input .errtxt.active {
+            opacity: 1;
+        }
+
+        .modal-input input {
+            border: none;
+            border-radius: 12px;
+            width: 100%;
+            box-shadow: 0 8px 16px rgb(255 255 255 / 30%),
+                0px 0px 32px rgb(255 255 255 / 40%);
+            background-color: #000;
+            height: 56px;
+            font-weight: 600;
+            font-size: 16px;
+            color: #fff;
+            outline: none;
+            padding: 0 10px;
+            margin-bottom: 7px;
+        }
+
+        .modal .unlock {
+            border: none;
+            width: 100%;
+            border-radius: 12px;
+            background-color: #fff;
+            height: 56px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            background: rgb(0, 0, 0, 0.8);
+            padding: 10px 0;
+            color: #fff;
+            font-size: 16px;
+            text-shadow: 0px 0px 6px #fff;
+            font-weight: 600;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .marquee {
+            white-space: nowrap;
+            display: flex;
+        }
+
+        @media (min-width: 700px) {
+            .app {
+                background-position: top;
+            }
+        }
+
+        @media (max-height: 780px) {
+            .app {
+                background-position: top;
+            }
+
+            .display {
+                justify-content: flex-end;
+            }
+        }
+
+        @keyframes dot-animation {
+            0% {
+                opacity: 0;
+            }
+            25% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+            75% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            } /* Вращение на 360 градусов */
+        }
+
+        @keyframes click {
+            0% {
+                transform: scale(0.95);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes marquee {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
 </head>
 <body>
 
 <div class="app">
-	<div class="display">
-		<!-- <div class="logo">
-			<img src="./en/assets/logo.png" alt="Logo">
-		</div> -->
-		<div class="block currency">
-			<img src= "https://ibb.co.com/7NNZ1bjJ"><img src="https://i.ibb.co.com/PzzP6tFZ/IMG-20250325-002744-634.png" alt="IMG-20250325-002744-634" border="0">
-			<div class="tit">ASSET</div>
-			<div class="value"></div>
-			<div class="currency-container"></div>
-		</div>
-		<div class="block forecast">
-			<div class="tit">BUTTON</div>
-			<div class="value">
-				<div class="spinner"></div>
-			</div>
-		</div>
-		<div class="block set-time">
-			<div class="tit">TIME</div>
-<!--			<input type="tel" class="time_input">-->
-			<div class="time_val"></div>
-			<div class="set-time-items"></div>
-		</div>
-		<button class="btn action" data-init-status="wait"><span class="text">GET SIGNAL</span><div class="spinner"></div></button>
-		
-		<div class="marquee-container">
-			<span id="marquee" class="marquee"></span>
-		</div>
-	</div>
+    <div class="display">
+        <!-- <div class="logo">
+            <img src="./en/assets/logo.png" alt="Logo">
+        </div> -->
+        <div class="block currency">
+            <img src="https://i.ibb.co.com/PzzP6tFZ/IMG-20250325-002744-634.png"  border="0">
+            <div class="tit">ASSET</div>
+            <div class="value"></div>
+            <div class="currency-container"></div>
+        </div>
+        <div class="block forecast">
+            <div class="tit">BUTTON</div>
+            <div class="value">
+                <div class="spinner"></div>
+            </div>
+        </div>
+        <div class="block set-time">
+            <div class="tit">TIME</div>
+<!--            <input type="tel" class="time_input">-->
+            <div class="time_val"></div>
+            <div class="set-time-items"></div>
+        </div>
+        <button class="btn action" data-init-status="wait"><span class="text">GET SIGNAL</span><div class="spinner"></div></button>
+        
+        <div class="marquee-container">
+            <span id="marquee" class="marquee"></span>
+        </div>
+    </div>
 
-	<div class="modal">
-<!--		<div<a href="https://imgbb.com/"><img src="https://i.ibb.co/23gjLm72/images.jpg" alt="images" border="0"></a> " alt="close"></div>-->
-		<div class="modal-tit">Enter a special code to use the application</div>
-		<div class="modal-input">
-			<input type="text">
-			<span class="errtxt">Incorrect data</span>
-		</div>
-		<button class="unlock">Unblock</button>
-	</div>
+    <div class="modal">
+<!--        <div<a href="https://imgbb.com/"><img src="https://i.ibb.co/23gjLm72/images.jpg" alt="images" border="0"></a> " alt="close"></div>-->
+        <div class="modal-tit">Enter a special code to use the application</div>
+        <div class="modal-input">
+            <input type="text">
+            <span class="errtxt">Incorrect data</span>
+        </div>
+        <button class="unlock">Unblock</button>
+    </div>
 </div>
 
-<script src="js/script.js"></script>
+<script>
+    const $app = document.querySelector(".app");
+    const $modal = document.querySelector(".modal");
+    const $currency = $app.querySelector(".currency");
+    const $currencyContainer = $currency.querySelector(".currency-container");
+    const $currencyValue = $currency.querySelector(".value");
+    const $blockSetTime = $app.querySelector(".set-time");
+    // const $timeInput = $blockSetTime.querySelector('.time_input');
+    const $timeValue = $blockSetTime.querySelector(".time_val");
+    const $timeItems = $blockSetTime.querySelector(".set-time-items");
+    const $blockForecast = $app.querySelector(".forecast");
+    const $blockForecastValue = $blockForecast.querySelector(".value");
+    const $btnAction = $app.querySelector(".btn.action");
+    const $btnActionText = $btnAction.querySelector(".text");
 
-</body></html>
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    const isWeekend = dayOfWeek === 6 || dayOfWeek === 0;
+    let currentTime = getCurrentTime();
+
+    const currency = [
+        "AUD/CAD",
+        "GBP/JPY",
+        "CHF/JPY",
+        "AUD/USD",
+        "EUR/CAD",
+        "USD/JPY",
+        "EUR/USD",
+        "CRYPTO IDX",
+    ];
+
+    let sessionCode = localStorage.getItem("sessionCode")
+        ? localStorage.getItem("sessionCode")
+        : "";
+
+    const sessionCodesArr = ["ashikai"];
+
+    if (isWeekend) {
+        if (!$currencyValue.textContent.includes("CRYPTO IDX")) {
+            $currencyValue.textContent = currency[0] + " (OTC)";
+        }
+    } else {
+        $currencyValue.textContent = currency[0];
+    }
+
+    currency.map((item) => {
+        if (isWeekend) {
+            if (!item.includes("CRYPTO IDX")) {
+                item = item + " (OTC)";
+            }
+        }
+
+        let div = document.createElement("div");
+        div.classList.add("item");
+        div.textContent = item;
+        $currencyContainer.appendChild(div);
+    });
+
+    setTime();
+
+    window.addEventListener("click", (e) => {
+        if (!$currencyContainer.contains(e.target) && !$currency.contains(e.target)) {
+            $currencyContainer.classList.remove("windowShow");
+        }
+
+        if (!$timeItems.contains(e.target) && !$blockSetTime.contains(e.target)) {
+            $timeItems.classList.remove("windowShow");
+        }
+    });
+
+    $currency.addEventListener("click", (e) => {
+        $currencyContainer.classList.add("windowShow");
+    });
+
+    $currencyContainer.querySelectorAll(".item").forEach((item) => {
+        item.addEventListener("click", (e) => {
+            e.stopPropagation();
+            let val = item.textContent;
+            $currencyValue.textContent = val;
+            $currencyContainer.classList.remove("windowShow");
+        });
+    });
+
+    $blockSetTime.addEventListener("click", (e) => {
+        $timeItems.classList.add("windowShow");
+    });
+
+    timeItemsActivate();
+
+    // $blockSetTime.addEventListener('click', () => {
+    //    $timeInput.focus();
+    // })
+
+    // $timeInput.value = getCurrentTime();
+    // $timeInput.addEventListener("input", function () {
+    //    const sanitizedInput = $timeInput.value.replace(/[^0-9]/g, "");
+    //    let value = sanitizedInput;
+    //
+    //    if (sanitizedInput.length >= 3) {
+    //        value = value.slice(0, 2) + ":" + value.slice(2);
+    //    }
+    //
+    //    if (value.length >= 5) {
+    //        value = value.slice(0, 5);
+    //    }
+    //
+    //    if ((value[0] == 2 && value[1] > 4) || (value[0] > 2) || (value[1] > 9)) {
+    //        value = '2';
+    //    }
+    //
+    //    if (value.slice(3)[0] > 5) {
+    //        value = value.slice(0, 2) + ":";
+    //    }
+    //
+    //    $timeInput.value = value;
+    // });
+    //
+    // $timeInput.addEventListener("blur", function () {
+    //    if ($timeInput.value.length == 0) {
+    //        $timeInput.value = getCurrentTime();
+    //    }
+    // });
+
+    $btnAction.addEventListener("click", () => {
+        let status = $btnAction.dataset.initStatus;
+        if (status == "loading") return;
+        $btnAction.dataset.initStatus = "loading";
+
+        $blockForecastValue.innerHTML = '<div class="spinner"></div>';
+        $blockForecast.classList.remove("down");
+        $blockForecast.classList.remove("up");
+        // isTimeBehindScheduled();
+        let forecastValue = getRandomForecast();
+        $btnAction.classList.add("loading");
+        $btnActionText.textContent = "loading";
+        setTimeout(() => {
+            $blockForecastValue.innerHTML = forecastValue;
+            if (forecastValue == "DOWN") {
+                $blockForecast.classList.add("down");
+            } else if (forecastValue == "UP") {
+                $blockForecast.classList.add("up");
+            }
+
+            setTimeOut(1);
+        }, 1000);
+    });
+
+    function getCurrentTime() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, "0");
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const timeString = hours + ":" + minutes;
+        return timeString;
+    }
+
+    // function isTimeBehindScheduled() {
+    //    const currentTime = getCurrentTime();
+    //    if (currentTime > $timeInput.value) {
+    //        $timeInput.value = currentTime;
+    //    }
+    // }
+
+    function isTimeBehindScheduled() {
+        const cTime = getCurrentTime();
+        if (cTime > $timeValue.textContent) {
+            $timeValue.textContent = cTime;
+            currentTime = getCurrentTime();
+            setCurrentTimeItems();
+            timeItemsActivate();
+        }
+    }
+
+    function getRandomForecast() {
+        const randomValue = Math.random();
+        if (randomValue < 0.5) {
+            return "DOWN";
+        } else {
+            return "UP";
+        }
+    }
+
+    function setCurrentTimeItems() {
+        $timeItems.innerHTML = "";
+        $timeValue.textContent = currentTime;
+        let val = currentTime;
+        for (let i = 0; i < 15; i++) {
+            let firstT = +val.slice(0, 2);
+            let lastM = +val.slice(3, 5);
+
+            if (i > 0) {
+                lastM = lastM + 1;
+
+                if (lastM == 60) {
+                    firstT = firstT + 1;
+                    if (firstT < 10) {
+                        val = `0${firstT}:00`;
+                    } else {
+                        val = `${firstT}:00`;
+                    }
+                } else {
+                    if (firstT < 10) {
+                        if (lastM < 10) {
+                            val = `0${firstT}:0${lastM}`;
+                        } else {
+                            val = `0${firstT}:${lastM}`;
+                        }
+                    } else {
+                        if (lastM < 10) {
+                            val = `${firstT}:0${lastM}`;
+                        } else {
+                            val = `${firstT}:${lastM}`;
+                        }
+                    }
+                }
+            }
+
+            let div = document.createElement("div");
+            div.classList.add("item");
+            div.textContent = val;
+            $timeItems.appendChild(div);
+        }
+    }
+
+    function setTime() {
+        $timeItems.innerHTML = "";
+        $timeValue.textContent = "1 Min";
+
+        for (let i = 1; i <= 1; i++) {
+            let div = document.createElement("div");
+            div.classList.add("item");
+            div.textContent = `${i} Min`;
+            $timeItems.appendChild(div);
+        }
+    }
+
+    function timeItemsActivate() {
+        $timeItems.querySelectorAll(".item").forEach((item) => {
+            item.addEventListener("click", (e) => {
+                e.stopPropagation();
+                let val = item.textContent;
+                $timeValue.textContent = val;
+                $timeItems.classList.remove("windowShow");
+            });
+        });
+    }
+
+    function setTimeOut($countMinutes = 1) {
+        let startTime = 0;
+        let endTime = $countMinutes * 60;
+        let time = endTime;
+        let interval = "";
+        $btnActionText.textContent = timeView(time);
+        interval = setInterval(() => {
+            startTime += 1;
+            if (startTime == endTime) {
+                $btnAction.classList.remove("loading");
+                $btnActionText.textContent = "Next signal";
+                $btnAction.dataset.initStatus = "wait";
+                clearInterval(interval);
+            } else {
+                time -= 1;
+                $btnActionText.textContent = timeView(time);
+            }
+        }, 1000);
+    }
+
+    function timeView(countSecond) {
+        let minutes = Math.floor(countSecond / 60);
+
+        if (minutes > 0) {
+            console.log(1);
+            return `${minutes}:${countSecond - minutes * 60}`;
+        } else {
+            console.log(2);
+            return `0:${countSecond}`;
+        }
+    }
+
+    $modal.querySelector(".unlock").addEventListener("click", () => {
+        let code = $modal.querySelector(".modal-input input").value;
+        setCode(code);
+    });
+    function setCode(code) {
+        if (sessionCodesArr.includes(code)) {
+            localStorage.setItem("sessionCode", code);
+            $modal.style.display = "none";
+            document.querySelector(".display").style.display = "flex";
+        } else {
+            document.querySelector(".modal-input .errtxt").classList.add("active");
+        }
+    }
+
+    if (sessionCode && sessionCodesArr.includes(sessionCode)) {
+        $modal.style.display = "none";
+        document.querySelector(".display").style.display = "flex";
+    }
+
+    const currencyPairs = [
+        "AUD/CAD",
+        "GBP/JPY",
+        "CHF/JPY",
+        "AUD/USD",
+        "EUR/CAD",
+        "USD/JPY",
+        "EUR/USD",
+    ];
+
+    async function updateRates() {
+        const baseUrl = "https://api.exchangerate-api.com/v4/latest/USD";
+        const response = await fetch(baseUrl);
+        const data = await response.json();
+        const rates = data.rates;
+
+        const marquee1 = document.createElement("div");
+        const marquee2 = document.createElement("div");
+
+        currencyPairs.forEach((pair) => {
+            const [base, quote] = pair.split("/");
+            const rate = (rates[quote] / rates[base]).toFixed(2);
+            const span1 = document.createElement("span");
+            const span2 = document.createElement("span");
+            span1.textContent = span2.textContent = `${pair} ${rate}`;
+            span1.style.paddingRight = span2.style.paddingRight = "25px";
+            marquee1.appendChild(span1);
+            marquee2.appendChild(span2);
+        });
+
+        const marqueeContainer = document.getElementById("marquee");
+        marqueeContainer.appendChild(marquee1);
+        marqueeContainer.appendChild(marquee2);
+
+        startMarquee(marqueeContainer);
+    }
+
+    function startMarquee(container) {
+        let x = 0;
+        const speed = 1;
+
+        function move() {
+            const firstChildWidth = container.firstChild.offsetWidth;
+            x -= speed;
+            if (x < -firstChildWidth) {
+                container.appendChild(container.firstChild);
+                x += firstChildWidth;
+            }
+            container.style.transform = `translateX(${x}px)`;
+
+            requestAnimationFrame(move);
+        }
+        move();
+    }
+
+    document.addEventListener("DOMContentLoaded", updateRates);
+</script>
+
+</body>
+</html>
+
+
